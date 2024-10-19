@@ -15,7 +15,8 @@ const handleRequest = () => {
     4,
     25
   );
-  //   console.log(purchaseDetails, "purchaseDetails");
+
+  console.log(purchaseDetails, "purchaseDetails");
   let validateNoOfTickets = purchaseDetails.find((el) => el.noOfTickets > 25);
   let validateAdultTicketsIncluded = purchaseDetails.find(
     (el) => el.ticketType === "ADULT"
@@ -41,8 +42,6 @@ const handleRequest = () => {
       }
     })
     .filter((request) => request !== null);
-
-  console.log(purchaseDetails, "purchaseDetails");
 
   if (accountID > 0) {
     // make a purchase
