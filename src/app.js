@@ -8,6 +8,7 @@ const InvalidRequestExceptions = new InvalidPurchaseException();
 const ticketService = new TicketService();
 const reservationService = new SeatReservationService();
 const accountID = 1;
+const TicketTypes = ["ADULT", "CHILD", "INFANT"];
 
 const handleRequest = () => {
   const purchaseDetails = generateRandomPurchaseOrder(
@@ -63,4 +64,4 @@ const handleRequest = () => {
   }
 };
 
-handleRequest();
+// handleRequest();

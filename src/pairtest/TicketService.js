@@ -13,17 +13,21 @@ export default class TicketService {
       ADULT: 25,
     };
 
-    const totalTicketCost = ticketTypeRequests.reduce((acc, currentValue) => {
-      if (currentValue.getTicketType() !== "INFANT") {
-        acc +=
-          ticketCost[currentValue.getTicketType()] *
-          currentValue.getNoOfTickets();
-      }
-      return acc;
-    }, 0);
+    const { totalTicketCost, neededSeats } = ticketTypeRequests.reduce(
+      (acc, currentValue) => {
+        if (currentValue.getTicketType() !== "INFANT") {
+          acc.totalTicketCost +=
+            ticketCost[currentValue.getTicketType()] *
+            currentValue.getNoOfTickets();
+          acc.neededSeats += currentValue.getNoOfTickets();
+        }
+        return acc;
+      },
+      { totalTicketCost: 0, neededSeats: 0 }
+    );
     console.log("Cost of Tickets:", totalTicketCost);
     paymentService.makePayment(accountId, totalTicketCost);
 
-    return { msg: "payment completed" };
+    return { message: "payment completed", neededSeats };
   }
 }
