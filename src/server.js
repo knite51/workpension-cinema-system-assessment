@@ -11,9 +11,7 @@ const ticketInformationService = new TicketInformationService();
 const paymentReservationService = new PaymentReservationService();
 const accountID = 1;
 
-const options = `What tickets are you buying?
-Format -> ticket_type:no_of_tickets. Example -> adult:2, child:1, infant:1
-`;
+const options = `What tickets are you buying? Format -> ticket_type:no_of_tickets. Example -> adult:2, child:1, infant:1 ... `;
 
 const askQuestion = () => {
   rl.question(options, (userResponse) => {
@@ -27,7 +25,8 @@ const askQuestion = () => {
       rl.close();
     } catch (error) {
       // prevent noise in terminal and re-prompt user
-      console.log(error.message);
+      console.log(`ERROR!!! ${error.message}. "Kindly Retry"`);
+
       askQuestion();
     }
   });

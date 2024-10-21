@@ -3,11 +3,7 @@ import InvalidPurchaseException from "../pairtest/lib/InvalidPurchaseException.j
 const invalidRequestExceptions = new InvalidPurchaseException();
 
 export const validateUserInput = (singleTickeInfoArr) => {
-  if (
-    singleTickeInfoArr.length !== 2 ||
-    (typeof singleTickeInfoArr[0] !== "string" &&
-      typeof singleTickeInfoArr[1] !== "string")
-  ) {
+  if (singleTickeInfoArr.length !== 2) {
     return invalidRequestExceptions.invalidTicketInputFormatError();
   }
 };
@@ -15,7 +11,7 @@ export const validateUserInput = (singleTickeInfoArr) => {
 export const validateNumberOfTickets = (noOfTickets, maxTicketAllowed = 25) => {
   maxTicketAllowed = maxTicketAllowed - noOfTickets;
   if (maxTicketAllowed < 0) {
-    return invalidRequestExceptions.maxedTicketError(25);
+    return invalidRequestExceptions.maxedTicketError();
   }
   return;
 };
