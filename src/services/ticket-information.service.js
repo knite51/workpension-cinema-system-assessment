@@ -7,7 +7,7 @@ import {
 import TicketTypeRequest from "../pairtest/lib/TicketTypeRequest.js";
 
 export class TicketInformationService {
-  #processInput = [];
+  #processedInput = [];
   #totalTickets = 0;
   #hasAdultTicket = false;
 
@@ -18,34 +18,42 @@ export class TicketInformationService {
   }
 
   #processSingleTicketInfo(singleTickeInfo) {
-    const singleTickeInfoArr = singleTickeInfo.trim().split(":");
-    validateUserInput(singleTickeInfoArr);
-    let ticketType = singleTickeInfoArr[0].toUpperCase();
-    let noOfTickets = Number(singleTickeInfoArr[1].trim());
-    const ticketTypeRequest = new TicketTypeRequest(ticketType, noOfTickets);
-    return ticketTypeRequest;
+    try {
+      const singleTickeInfoArr = singleTickeInfo.trim().split(":");
+      validateUserInput(singleTickeInfoArr);
+      let ticketType = singleTickeInfoArr[0].toUpperCase();
+      let noOfTickets = Number(singleTickeInfoArr[1].trim());
+      const ticketTypeRequest = new TicketTypeRequest(ticketType, noOfTickets);
+      return ticketTypeRequest;
+    } catch (error) {
+      throw error;
+    }
   }
 
   refineValidatedTicketInput(ticketInfo) {
-    if (this.#isMultipleTickets(ticketInfo)) {
-      const tickeInfoArr = ticketInfo.split(",");
-      for (let i = 0; i < tickeInfoArr.length; i++) {
-        let refinedInput = this.#processSingleTicketInfo(tickeInfoArr[i]);
+    try {
+      if (this.#isMultipleTickets(ticketInfo)) {
+        const tickeInfoArr = ticketInfo.split(",");
+        for (let i = 0; i < tickeInfoArr.length; i++) {
+          let refinedInput = this.#processSingleTicketInfo(tickeInfoArr[i]);
+          this.#totalTickets += refinedInput.getNoOfTickets();
+          refinedInput.getTicketType() === "ADULT"
+            ? (this.#hasAdultTicket = true)
+            : null;
+          this.#processedInput.push(refinedInput);
+        }
+      } else {
+        let refinedInput = this.#processSingleTicketInfo(ticketInfo);
         this.#totalTickets += refinedInput.getNoOfTickets();
-        refinedInput.getTicketType() === "ADULT"
-          ? (this.#hasAdultTicket = true)
-          : null;
-        this.#processInput.push(refinedInput);
+        this.#hasAdultTicket =
+          refinedInput.getTicketType() === "ADULT" ? true : false;
+        this.#processedInput.push(refinedInput);
       }
-    } else {
-      let refinedInput = this.#processSingleTicketInfo(ticketInfo);
-      this.#totalTickets += refinedInput.getNoOfTickets();
-      this.#hasAdultTicket =
-        refinedInput.getTicketType() === "ADULT" ? true : false;
-      this.#processInput.push(refinedInput);
+      validateNumberOfTickets(this.#totalTickets);
+      validateAdultTicketsIncluded(this.#hasAdultTicket);
+      return this.#processedInput;
+    } catch (error) {
+      throw error;
     }
-    validateNumberOfTickets(this.#totalTickets);
-    validateAdultTicketsIncluded(this.#hasAdultTicket);
-    return this.#processInput;
   }
 }

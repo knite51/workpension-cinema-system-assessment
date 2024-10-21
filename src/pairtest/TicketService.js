@@ -6,18 +6,20 @@ export default class TicketService {
    * Should only have private methods other than the one below.
    */
 
-  purchaseTickets(accountId, ...ticketTypeRequests) {
-    const ticketCost = {
+  get #getTicketCost() {
+    return {
       INFANT: 0,
       CHILD: 15,
       ADULT: 25,
     };
+  }
 
-    const { totalTicketCost, neededSeats } = ticketTypeRequests.reduce(
+  #calculateTicketsSeats(ticketTypeRequests) {
+    return ticketTypeRequests.reduce(
       (acc, currentValue) => {
         if (currentValue.getTicketType() !== "INFANT") {
           acc.totalTicketCost +=
-            ticketCost[currentValue.getTicketType()] *
+            this.#getTicketCost[currentValue.getTicketType()] *
             currentValue.getNoOfTickets();
           acc.neededSeats += currentValue.getNoOfTickets();
         }
@@ -25,6 +27,11 @@ export default class TicketService {
       },
       { totalTicketCost: 0, neededSeats: 0 }
     );
+  }
+
+  purchaseTickets(accountId, ...ticketTypeRequests) {
+    const { totalTicketCost, neededSeats } =
+      this.#calculateTicketsSeats(ticketTypeRequests);
     console.log("Cost of Tickets:", totalTicketCost);
     paymentService.makePayment(accountId, totalTicketCost);
 

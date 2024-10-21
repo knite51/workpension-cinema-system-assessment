@@ -21,7 +21,7 @@ export class PaymentReservationService {
     console.log(`Reservation completed, ${neededSeats} Seats Reserved`);
   }
 
-  processPaymentReservation(accountID, validatedTickets) {
+  processPaymentAndReservation(accountID, validatedTickets) {
     validateAccountID(accountID);
     const paymentResponse = this.#processPayment(accountID, validatedTickets);
     this.#processReservation(accountID, paymentResponse);

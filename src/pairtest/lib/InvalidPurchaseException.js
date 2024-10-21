@@ -1,13 +1,13 @@
 export default class InvalidPurchaseException extends Error {
   invalidTicketInputFormatError() {
     throw new Error(
-      `invalid ticket input format. accepted format: child:3, adult:10, infant:1`
+      `Invalid ticket input format. accepted format: child:3, adult:10, infant:1`
     );
   }
 
   maxedTicketError() {
     throw new Error(
-      `maximum allowed tickets of 25 reached for a single purchase`
+      `Maximum allowed tickets of 25 reached for a single purchase`
     );
   }
 
@@ -20,10 +20,10 @@ export default class InvalidPurchaseException extends Error {
   }
 
   paymentError() {
-    throw new Error(`error while processing payment`);
+    throw new Error(`Error while processing payment`);
   }
 
   reservationError() {
-    throw new Error(`error on reservation`);
+    throw new Error(`Error on reservation`);
   }
 }
