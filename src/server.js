@@ -1,6 +1,6 @@
 import readline from "node:readline";
-import { TicketInformationService } from "./services/ticket-information.service.js";
-import { PaymentReservationService } from "./services/payment-reservation.service.js";
+import { TicketInformationService } from "./services/TicketInformationService.js";
+import { PaymentReservationService } from "./services/PaymentReservationService.js";
 
 const rl = readline.createInterface({
   input: process.stdin,

@@ -2,10 +2,10 @@ import {
   validateAccountID,
   validatePayment,
 } from "../middlewares/validation.middleware.js";
-import TicketService from "../pairtest/TicketService.js";
 import SeatReservationService from "../thirdparty/seatbooking/SeatReservationService.js";
+import { ExtendedTicketService } from "./ExtendedTicketService.js";
 
-const ticketService = new TicketService();
+const ticketService = new ExtendedTicketService();
 const reservationService = new SeatReservationService();
 
 export class PaymentReservationService {
