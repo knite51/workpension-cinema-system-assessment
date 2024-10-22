@@ -17,8 +17,8 @@ This is a command-line application that allows users to purchase tickets for var
 
 ## Installation
 
-Run `npm i` to install dependencies
-Run `npm run dev ` to start app
+- Run `npm i` to install dependencies
+- Run `npm run dev ` to start app
 
 ## Running unit tests
 
@@ -26,6 +26,6 @@ Run `npm run test` to execute the unit tests via [Jest].
 
 ## How to use
 
-Enter ticket type and the number of the tickets - seperated by column sign (:)
-Example of single ticket -: adult:1
-Example of multiple ticket -: adult:1, child:1
+- Enter ticket type and the number of the tickets - seperated by column sign (:)
+- Example of single ticket -: adult:1
+- Example of multiple ticket -: adult:1, child:1
