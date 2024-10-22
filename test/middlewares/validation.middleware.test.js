@@ -1,117 +1,190 @@
-// import { validateNumberOfTickets } from "../../src/middlewares/validation.middleware.js";
+import {
+  validateUserInput,
+  validateNumberOfTickets,
+  validateAdultTicketsIncluded,
+  validateAccountID,
+  validatePayment,
+} from "../../src/middlewares/validation.middleware.js";
 import InvalidPurchaseException from "../../src/pairtest/lib/InvalidPurchaseException.js";
-import * as validationMiddleware from "../../src/middlewares/validation.middleware.js";
-
-// Mock the validationMiddleware class
-// jest.mock("../../src/pairtest/lib/InvalidPurchaseException.js");
 
 describe("Validation Functions", () => {
-  let mockInvalidPurchaseException;
-
-  beforeEach(() => {
-    mockInvalidPurchaseException = new InvalidPurchaseException();
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   describe("validateUserInput", () => {
+    let mockInvalidTicketInputFormatError;
+
     beforeEach(() => {
-      validateUserInput = jest.fn((input) => {
-        if (input.length !== 2) {
-          mockInvalidPurchaseException.invalidTicketInputFormatError();
-        }
-      });
-    });
-    it("should return an error if the input length is not 2", () => {
-      validateUserInput(["child"]);
-      const spy = jest.spyOn(
-        mockInvalidPurchaseException,
-        "invalidTicketInputFormatError"
-      );
-      expect(spy).toHaveBeenCalled();
+      mockInvalidTicketInputFormatError = jest
+        .spyOn(
+          InvalidPurchaseException.prototype,
+          "invalidTicketInputFormatError"
+        )
+        .mockImplementation(() => {
+          throw new Error("Invalid ticket input format error");
+        });
     });
 
-    it("should not return an error if the input length is 2", () => {
-      const result = validateUserInput(["child", "20"]);
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it("should call invalidTicketInputFormatError when the input array length is not 2", () => {
+      const invalidInput = ["child"];
+
+      expect(() => {
+        validateUserInput(invalidInput);
+      }).toThrow("Invalid ticket input format error");
+
+      expect(mockInvalidTicketInputFormatError).toHaveBeenCalled();
+    });
+
+    it("should not call invalidTicketInputFormatError when the input array length is 2", () => {
+      const validInput = ["child", "1"];
+
+      const result = validateUserInput(validInput);
+
       expect(result).toBeUndefined();
+      expect(mockInvalidTicketInputFormatError).not.toHaveBeenCalled();
     });
   });
 
-  // Test cases for validateNumberOfTickets
   describe("validateNumberOfTickets", () => {
-    // beforeEach(() => {
-    //   validateNumberOfTicke = jest
-    //     .fn((a, b) => b - a < 0)
-    //     .mockReturnValue((a, b) => validateNumberOfTickets(a, b));
-    // });
-    it("should return an error if the number of tickets exceeds the allowed maximum", () => {
-      const spyMaxedTicketError = jest
-        .spyOn(mockInvalidPurchaseException, "maxedTicketError")
-        .mockImplementation(() => {});
-      const spyValidateNumberOfTickets = jest.spyOn(
-        validationMiddleware,
-        "validateNumberOfTickets"
-      );
-      validationMiddleware.validateNumberOfTickets(30, 25);
-      expect(spyValidateNumberOfTickets).toHaveBeenCalled();
-      expect(spyValidateNumberOfTickets).toHaveBeenCalledWith(30, 25);
-      // expect(isPlaying).toBe(mockInvalidPurchaseException.maxedTicketError());
-      // expect(isPlaying).toBe(mockInvalidPurchaseException.maxedTicketError());
+    let mockMaxedTicketError;
+
+    beforeEach(() => {
+      mockMaxedTicketError = jest
+        .spyOn(InvalidPurchaseException.prototype, "maxedTicketError")
+        .mockImplementation(() => {
+          throw new Error(
+            "Maximum allowed tickets of 25 reached for a single purchase"
+          );
+        });
     });
 
-    it("should not return an error if the number of tickets is within the allowed maximum", () => {
-      const result = validateNumberOfTickets(24, 25);
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it("should call maxedTicketError when the noOfTicket is greater than the max allowed", () => {
+      const invalidInput = [26, 25];
+
+      expect(() => {
+        validateNumberOfTickets(...invalidInput);
+      }).toThrow("Maximum allowed tickets of 25 reached for a single purchase");
+
+      expect(mockMaxedTicketError).toHaveBeenCalled();
+    });
+
+    it("should not call maxedTicketError when the noOfTicket is less than the max allowed", () => {
+      const validInput = [25, 25];
+
+      const result = validateNumberOfTickets(validInput);
+
       expect(result).toBeUndefined();
+      expect(mockMaxedTicketError).not.toHaveBeenCalled();
     });
   });
 
-  //   // Test cases for validateAdultTicketsIncluded
-  //   describe("validateAdultTicketsIncluded", () => {
-  //     it("should return an error if there is no adult ticket", () => {
-  //       InvalidRequestExceptions.noAdultTicketError = jest.fn();
-  //       validateAdultTicketsIncluded(false);
-  //       expect(InvalidRequestExceptions.noAdultTicketError).toHaveBeenCalled();
-  //     });
+  describe("validateAdultTicketsIncluded", () => {
+    let mockNoAdultTicketError;
 
-  //     it("should not return an error if there is an adult ticket", () => {
-  //       const result = validateAdultTicketsIncluded(true);
-  //       expect(result).toBeUndefined();
-  //     });
-  //   });
+    beforeEach(() => {
+      mockNoAdultTicketError = jest
+        .spyOn(InvalidPurchaseException.prototype, "noAdultTicketError")
+        .mockImplementation(() => {
+          throw new Error("Adult ticket required");
+        });
+    });
 
-  //   // Test cases for validateAccountID
-  //   describe("validateAccountID", () => {
-  //     it("should return an error if accountID is not greater than 0", () => {
-  //       InvalidRequestExceptions.invalidAccountIdError = jest.fn();
-  //       validateAccountID(0);
-  //       expect(InvalidRequestExceptions.invalidAccountIdError).toHaveBeenCalled();
-  //     });
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
 
-  //     it("should not return an error if accountID is greater than 0", () => {
-  //       const result = validateAccountID(1);
-  //       expect(result).toBeUndefined();
-  //     });
-  //   });
+    it("should call noAdultTicketError when the adult ticket is not added", () => {
+      const hasAdultTicket = false;
 
-  //   // Test cases for validatePayment
-  //   describe("validatePayment", () => {
-  //     it("should return an error if the payment message is missing", () => {
-  //       InvalidRequestExceptions.paymentError = jest.fn();
-  //       validatePayment(null);
-  //       expect(InvalidRequestExceptions.paymentError).toHaveBeenCalled();
-  //     });
+      expect(() => {
+        validateAdultTicketsIncluded(hasAdultTicket);
+      }).toThrow("Adult ticket required");
 
-  //     it("should return an error if the payment message is not 'payment completed'", () => {
-  //       InvalidRequestExceptions.paymentError = jest.fn();
-  //       validatePayment("payment pending");
-  //       expect(InvalidRequestExceptions.paymentError).toHaveBeenCalled();
-  //     });
+      expect(mockNoAdultTicketError).toHaveBeenCalled();
+    });
 
-  //     it("should not return an error if the payment message is 'payment completed'", () => {
-  //       const result = validatePayment("payment completed");
-  //       expect(result).toBeUndefined();
-  //     });
-  //   });
+    it("should not call noAdultTicketError when the adult ticket is not added", () => {
+      const hasAdultTicket = true;
+
+      const result = validateAdultTicketsIncluded(hasAdultTicket);
+
+      expect(result).toBeUndefined();
+      expect(mockNoAdultTicketError).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("validateAccountID", () => {
+    let mockInvalidAccountIdError;
+
+    beforeEach(() => {
+      mockInvalidAccountIdError = jest
+        .spyOn(InvalidPurchaseException.prototype, "invalidAccountIdError")
+        .mockImplementation(() => {
+          throw new Error("Invalid account id");
+        });
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it("should call invalidAccountIdError when the accountId is less than zero ", () => {
+      const accountId = 0;
+
+      expect(() => {
+        validateAccountID(accountId);
+      }).toThrow("Invalid account id");
+
+      expect(mockInvalidAccountIdError).toHaveBeenCalled();
+    });
+
+    it("should not call invalidAccountIdError when the accountId is greater than zero", () => {
+      const accountId = 1;
+
+      const result = validateAccountID(accountId);
+
+      expect(result).toBeUndefined();
+      expect(mockInvalidAccountIdError).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("validatePayment", () => {
+    let mockPaymentError;
+
+    beforeEach(() => {
+      mockPaymentError = jest
+        .spyOn(InvalidPurchaseException.prototype, "paymentError")
+        .mockImplementation(() => {
+          throw new Error("Error while processing payment");
+        });
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it("should call paymentError when the message is undefined or with wrong value", () => {
+      const message = undefined || "unknown";
+
+      expect(() => {
+        validatePayment(message);
+      }).toThrow("Error while processing payment");
+
+      expect(mockPaymentError).toHaveBeenCalled();
+    });
+
+    it("should not call paymentError when message is defined with right value", () => {
+      const message = "payment completed";
+
+      const result = validatePayment(message);
+
+      expect(result).toBeUndefined();
+      expect(mockPaymentError).not.toHaveBeenCalled();
+    });
+  });
 });
