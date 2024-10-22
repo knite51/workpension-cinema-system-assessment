@@ -6,7 +6,7 @@ import {
 
 import TicketTypeRequest from "../pairtest/lib/TicketTypeRequest.js";
 
-export class TicketInformationService {
+export class RefineValidateUserInputService {
   #processedInput = [];
   #totalTickets = 0;
   #hasAdultTicket = false;
@@ -30,7 +30,7 @@ export class TicketInformationService {
     }
   }
 
-  refineValidatedTicketInput(ticketInfo) {
+  handleUserInput(ticketInfo) {
     try {
       if (this.#isMultipleTickets(ticketInfo)) {
         const tickeInfoArr = ticketInfo.split(",");

@@ -1,5 +1,5 @@
 import readline from "node:readline";
-import { TicketInformationService } from "./services/TicketInformationService.js";
+import { RefineValidateUserInputService } from "./services/RefineValidateUserInputService.js";
 import { PaymentReservationService } from "./services/PaymentReservationService.js";
 
 const rl = readline.createInterface({
@@ -25,11 +25,12 @@ const retryPrompt = () => {
 const askQuestion = () => {
   rl.question(options, (userResponse) => {
     try {
-      const ticketInformationService = new TicketInformationService();
+      const refineValidateUserInputService =
+        new RefineValidateUserInputService();
       const paymentReservationService = new PaymentReservationService();
 
       const validatedTickets =
-        ticketInformationService.refineValidatedTicketInput(userResponse);
+        refineValidateUserInputService.handleUserInput(userResponse);
       paymentReservationService.processPaymentAndReservation(
         accountID,
         validatedTickets
