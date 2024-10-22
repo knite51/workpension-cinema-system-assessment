@@ -1,4 +1,4 @@
-# Cinema Tickets and Reservation System
+# Cinema Ticketing and Reservation System
 
 This is a command-line application that allows users to purchase tickets for various categories (adult, child, infant) by inputting the ticket type and quantity. It validates user input and processes payments and reservations.
 
