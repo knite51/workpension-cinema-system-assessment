@@ -18,7 +18,8 @@ export class PaymentReservationService {
   #processReservation(accountID, { message, neededSeats }) {
     validatePayment(message);
     reservationService.reserveSeat(accountID, neededSeats);
-    console.log(`Reservation completed, ${neededSeats} Seats Reserved`);
+    console.log("Seats Reserved:", neededSeats);
+    console.log(`Reservation completed. Thank you for your purchase`);
   }
 
   processPaymentAndReservation(accountID, validatedTickets) {
